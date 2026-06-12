@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================================
+   DESIGN TOKENS — fonte única da marca Zenaxis.
+   Espelha as CSS vars do site v1 (--paper, --ink, --accent, etc.).
+   Disponíveis como utilitários Tailwind: bg-paper, text-ink, text-accent-deep…
+============================================================================ */
+@theme {
+  --color-paper: #f4efe4;       /* fundo papel quente */
+  --color-paper-2: #ece6d8;     /* surface alternativa */
+  --color-card: #fbf8f1;        /* cartões */
+  --color-ink: #16130d;         /* tinta quase-preta quente (texto/blocos escuros) */
+  --color-ink-soft: #46402f;    /* texto secundário */
+  --color-accent: #e8400f;      /* acento — REALCE / HOVER apenas */
+  --color-accent-deep: #bd2f08; /* acento profundo — FUNDO de botão em repouso */
+  --color-line: #d8d0bf;        /* bordas */
+
+  --radius-card: 18px;
 }
 
+/* Fontes via next/font (self-hosted no build). As vars são setadas no <html>. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-hanken);
+  --font-mono: var(--font-jetbrains);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+:root { color-scheme: light; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================================
+   REGRA DE CONTRASTE DOS BOTÕES DE ACENTO (correção da auditoria, item ALTO)
+   ----------------------------------------------------------------------------
+   #fff sobre --accent (#e8400f) = 4.06:1  -> REPROVA WCAG AA (texto normal).
+   #fff sobre --accent-deep (#bd2f08) = 5.88:1 -> PASSA AA.
+
+   Portanto: botão de acento usa accent-deep como FUNDO EM REPOUSO e
+   accent apenas no HOVER/realce. Nunca usar --accent puro como fundo de texto.
+============================================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 11px 20px;
+  border-radius: 100px;
+  border: 1.5px solid transparent;
+  transition: transform 0.25s, background 0.25s, color 0.25s, border-color 0.25s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-lg { padding: 16px 30px; font-size: 1.02rem; }
+
+.btn-accent {
+  background: var(--color-accent-deep);
+  border-color: var(--color-accent-deep);
+  color: #fff;
+}
+.btn-accent:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn-dark {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+.btn-dark:hover {
+  background: var(--color-accent-deep);
+  border-color: var(--color-accent-deep);
+  color: #fff;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+.btn-ghost:hover {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* Foco visível por teclado em qualquer interativo. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2.5px solid var(--color-accent-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto; }
+  .btn { transition: none; }
 }
