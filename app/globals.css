@@ -27,6 +27,14 @@
 
 :root { color-scheme: light; }
 
+/* Âncoras (#como-funciona, #prova, #diagnostico, #contato) não podem ficar
+   escondidas atrás do header sticky de 66px. Reserva o offset no scroll.
+   (reduced-motion zera scroll-behavior mais abaixo.) */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);

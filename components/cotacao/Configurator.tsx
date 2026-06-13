@@ -1,21 +1,18 @@
 "use client";
 
 /* ============================================================================
-   CONFIGURADOR DE COTAÇÃO (Fase C). Estado React em cima do MOTOR
-   (lib/pricing) — nenhuma regra de preço é duplicada aqui: o componente só
-   monta o QuoteState e chama calc/buildMessage.
+   DIAGNÓSTICO DE NEGÓCIO (E1, reenquadramento da cotação da Fase C).
+   A interface deixa de ser "menu de produtos" e vira diagnóstico: as
+   perguntas falam a REALIDADE do cliente (objetivo, tamanho, gargalo,
+   urgência), não a solução técnica.
 
-   Acessibilidade (auditoria): grupos single-select são radiogroup de
-   verdade (fieldset + role=radiogroup + inputs radio sr-only); extras é um
-   grupo de checkboxes. Teclado e foco vêm dos inputs nativos.
+   O MOTOR (lib/pricing) é intocado: cada rótulo humano só MAPEIA pra uma
+   chave que o motor já entende (tipo/porte/prazo/extras). Os preços e a
+   mensagem do WhatsApp seguem idênticos.
 
-   Progressive enhancement: o HTML servido já traz o estado default com os
-   chips marcados e um href wa.me VÁLIDO. O JS só enriquece (pré-preenche
-   pela URL, anima, atualiza o href a cada mudança).
-
-   Motion (motion.md): press de carimbo no clique, tinta por wipe no chip
-   ativo (CSS), preço em odômetro. Tudo cai pro estado final direto em
-   ?capture=1 e prefers-reduced-motion (decidido no MotionProvider).
+   Mantém tudo que a Fase C entregou: radiogroups semânticos, odômetro,
+   barra fixa mobile, href wa.me real no servidor (progressive enhancement),
+   press de carimbo e tinta por wipe (motion.md). Nenhum motion novo.
 ============================================================================ */
 import { Suspense, useCallback, useEffect, useState } from "react";
 import {
@@ -33,15 +30,11 @@ import { stampPress, useMotion, type MotionMode } from "@/lib/motion";
 import { Odometer } from "./Odometer";
 import { SearchParamsSync } from "./SearchParamsSync";
 
-type CtxAnswer = "Sim" | "Não" | null;
-
 interface UIState {
   tipo: TipoKey;
   porte: PorteKey;
   prazo: PrazoKey;
   extras: ExtraKey[];
-  ctxIdentidade: CtxAnswer;
-  ctxConteudo: CtxAnswer;
   nome: string;
 }
 
@@ -50,25 +43,34 @@ const DEFAULT: UIState = {
   porte: "medio",
   prazo: "normal",
   extras: [],
-  ctxIdentidade: null,
-  ctxConteudo: null,
   nome: "",
 };
 
-/* Hints de UI (não vivem no motor; os labels sim, via DATA). */
-const TIPO_HINT: Record<TipoKey, string> = {
-  landing: "1 página que converte",
-  institucional: "Várias páginas",
-  sistema: "Sob medida",
+/* ---- Rótulos humanos -> chaves do motor (apresentação, não preço) ---- */
+/* O rótulo do meio descreve o que o tier institucional entrega de fato
+   (site completo, várias páginas), não automação. Automação é gargalo
+   (extras ia/crm/whatsapp) e aparece no tier sistema ("site mais
+   automação"), pra não prometer o que o orçamento não mostra. */
+const TIPO_OPT: Record<TipoKey, string> = {
+  landing: "Preciso passar mais credibilidade e fechar mais caro",
+  institucional: "Quero um site completo, com mais páginas e presença",
+  sistema: "Quero uma operação completa, site mais automação",
 };
-const PORTE_HINT: Record<PorteKey, string> = {
-  enxuto: "O essencial, no ar rápido",
-  medio: "Mais seções e cuidado",
-  robusto: "Completo, sob medida",
+const PORTE_OPT: Record<PorteKey, string> = {
+  enxuto: "Só eu, comecei agora",
+  medio: "Tenho uma equipe pequena",
+  robusto: "Operação estabelecida, com várias frentes",
 };
-const PRAZO_HINT: Record<PrazoKey, string> = {
-  normal: "Ritmo padrão",
-  expresso: "+30% · prazo menor",
+const PRAZO_OPT: Record<PrazoKey, string> = {
+  normal: "Tenho um prazo confortável",
+  expresso: "É urgente, preciso pra ontem",
+};
+const EXTRA_OPT: Record<ExtraKey, string> = {
+  whatsapp: "Meu WhatsApp não dá conta do movimento",
+  ia: "Respondo as mesmas perguntas o dia inteiro",
+  crm: "Perco contatos e não faço acompanhamento",
+  seo: "Ninguém me encontra no Google",
+  identidade: "Minha marca não passa o meu nível",
 };
 
 const INCLUSO = [
@@ -88,7 +90,6 @@ function Chip({
   onPick,
   mode,
   label,
-  hint,
 }: {
   active: boolean;
   type: "radio" | "checkbox";
@@ -96,11 +97,10 @@ function Chip({
   onPick: () => void;
   mode: MotionMode;
   label: string;
-  hint?: string;
 }) {
   return (
     <label
-      className="chip"
+      className="chip w-full"
       data-active={active}
       onClick={(e) => stampPress(e.currentTarget, mode)}
     >
@@ -112,34 +112,28 @@ function Chip({
         className="sr-only"
       />
       <span>{label}</span>
-      {hint ? <span className="chip-hint">{hint}</span> : null}
     </label>
   );
 }
 
-/* ---------- Cabeçalho de grupo (rótulo mono numerado) ---------- */
+/* ---------- Pergunta do diagnóstico (legend acessível) ---------- */
 function GroupHead({
   id,
   step,
-  title,
-  note,
+  question,
 }: {
   id: string;
   step: string;
-  title: string;
-  note?: string;
+  question: string;
 }) {
   return (
-    <legend
-      id={id}
-      className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-soft"
-    >
-      {step} · {title}
-      {note ? (
-        <span className="ml-1 font-body text-[0.84rem] normal-case tracking-normal text-ink-soft">
-          {note}
-        </span>
-      ) : null}
+    <legend id={id} className="flex items-baseline gap-3">
+      <span className="font-mono text-[0.72rem] tracking-[0.16em] text-accent-deep">
+        {step}
+      </span>
+      <span className="font-display text-[1.12rem] font-medium leading-snug tracking-tight text-ink">
+        {question}
+      </span>
     </legend>
   );
 }
@@ -149,7 +143,9 @@ export function Configurator() {
   const [state, setState] = useState<UIState>(DEFAULT);
   const [ready, setReady] = useState(false);
 
-  /* Pré-preenchimento via URL (uma vez), validado contra o motor. */
+  /* Pré-preenchimento via URL (uma vez), validado contra o motor.
+     As chaves da URL são as do MOTOR (tipo/porte/prazo/extras), não os
+     rótulos humanos, então a continuidade vinda de outras telas funciona. */
   const applyParams = useCallback((sp: URLSearchParams) => {
     setState((prev) => {
       const next: UIState = { ...prev };
@@ -172,10 +168,8 @@ export function Configurator() {
     setReady(true);
   }, []);
 
-  /* Estado refletido na URL (compartilhável). Só depois do pré-preenchimento
-     pra não apagar os params de entrada. nome fica de fora (pessoal).
-     Semeia da URL atual e só sobrescreve as chaves canônicas, preservando
-     params alheios (?capture=1, utm_*, etc.). */
+  /* Estado refletido na URL (compartilhável). Só após o pré-preenchimento.
+     Semeia da URL atual e só sobrescreve as chaves canônicas. */
   useEffect(() => {
     if (!ready) return;
     const p = new URLSearchParams(window.location.search);
@@ -193,10 +187,7 @@ export function Configurator() {
     porte: state.porte,
     prazo: state.prazo,
     extras: state.extras,
-    contexto: {
-      identidade: state.ctxIdentidade,
-      conteudo: state.ctxConteudo,
-    },
+    contexto: { identidade: null, conteudo: null },
     nome: state.nome.trim() || undefined,
   };
   const result = calc(engineState);
@@ -210,40 +201,22 @@ export function Configurator() {
         : [...s.extras, key],
     }));
 
-  const progressSteps = [
-    true, // tipo (sempre definido)
-    true, // porte
-    true, // prazo
-    state.ctxIdentidade !== null,
-    state.ctxConteudo !== null,
-  ];
-  const done = progressSteps.filter(Boolean).length;
-
   return (
     <>
       <Suspense fallback={null}>
         <SearchParamsSync onApply={applyParams} />
       </Suspense>
 
-      {/* Progresso discreto */}
-      <div className="mt-9 flex items-center gap-4" aria-hidden="true">
-        <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-line">
-          <div
-            className="prog-fill h-full rounded-full bg-accent-deep"
-            style={{ width: `${(done / progressSteps.length) * 100}%` }}
-          />
-        </div>
-        <span className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-soft">
-          <b className="text-ink">{done}</b> / {progressSteps.length} definido
-        </span>
-      </div>
-
-      <div className="mt-10 grid items-start gap-10 md:grid-cols-[1.18fr_0.82fr]">
-        {/* ---------------- COLUNA: CONFIGURADOR ---------------- */}
-        <form className="flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+      <div className="grid items-start gap-10 md:grid-cols-[1.18fr_0.82fr]">
+        {/* ---------------- COLUNA: DIAGNÓSTICO ---------------- */}
+        <form className="flex flex-col gap-9" onSubmit={(e) => e.preventDefault()}>
           <fieldset role="radiogroup" aria-labelledby="g-tipo">
-            <GroupHead id="g-tipo" step="01" title="Tipo de projeto" />
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            <GroupHead
+              id="g-tipo"
+              step="01"
+              question="Qual é o seu objetivo principal?"
+            />
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {(Object.keys(DATA.tipo) as TipoKey[]).map((key) => (
                 <Chip
                   key={key}
@@ -252,8 +225,7 @@ export function Configurator() {
                   active={state.tipo === key}
                   onPick={() => setState((s) => ({ ...s, tipo: key }))}
                   mode={mode}
-                  label={DATA.tipo[key].label}
-                  hint={TIPO_HINT[key]}
+                  label={TIPO_OPT[key]}
                 />
               ))}
             </div>
@@ -263,10 +235,9 @@ export function Configurator() {
             <GroupHead
               id="g-porte"
               step="02"
-              title="Porte"
-              note="(afeta valor e prazo)"
+              question="Qual o tamanho da sua operação hoje?"
             />
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {(Object.keys(DATA.porte) as PorteKey[]).map((key) => (
                 <Chip
                   key={key}
@@ -275,21 +246,22 @@ export function Configurator() {
                   active={state.porte === key}
                   onPick={() => setState((s) => ({ ...s, porte: key }))}
                   mode={mode}
-                  label={DATA.porte[key].label}
-                  hint={PORTE_HINT[key]}
+                  label={PORTE_OPT[key]}
                 />
               ))}
             </div>
           </fieldset>
 
-          <fieldset role="group" aria-labelledby="g-extras">
+          <fieldset role="group" aria-labelledby="g-gargalo">
             <GroupHead
-              id="g-extras"
+              id="g-gargalo"
               step="03"
-              title="Extras"
-              note="(marque os que fizerem sentido)"
+              question="Onde está o seu maior gargalo hoje?"
             />
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            <p className="mt-1 text-[0.86rem] text-ink-soft">
+              Marque tudo que você reconhecer.
+            </p>
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {(Object.keys(DATA.extras) as ExtraKey[]).map((key) => (
                 <Chip
                   key={key}
@@ -298,15 +270,15 @@ export function Configurator() {
                   active={state.extras.includes(key)}
                   onPick={() => toggleExtra(key)}
                   mode={mode}
-                  label={DATA.extras[key].label}
+                  label={EXTRA_OPT[key]}
                 />
               ))}
             </div>
           </fieldset>
 
           <fieldset role="radiogroup" aria-labelledby="g-prazo">
-            <GroupHead id="g-prazo" step="04" title="Prazo desejado" />
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            <GroupHead id="g-prazo" step="04" question="Qual a sua urgência?" />
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {(Object.keys(DATA.prazo) as PrazoKey[]).map((key) => (
                 <Chip
                   key={key}
@@ -315,65 +287,20 @@ export function Configurator() {
                   active={state.prazo === key}
                   onPick={() => setState((s) => ({ ...s, prazo: key }))}
                   mode={mode}
-                  label={DATA.prazo[key].label}
-                  hint={PRAZO_HINT[key]}
-                />
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset role="radiogroup" aria-labelledby="g-ident">
-            <GroupHead
-              id="g-ident"
-              step="05"
-              title="Já tenho identidade visual?"
-              note="(não muda o preço)"
-            />
-            <div className="mt-3 flex flex-wrap gap-2.5">
-              {(["Sim", "Não"] as const).map((val) => (
-                <Chip
-                  key={val}
-                  type="radio"
-                  name="ctx_identidade"
-                  active={state.ctxIdentidade === val}
-                  onPick={() => setState((s) => ({ ...s, ctxIdentidade: val }))}
-                  mode={mode}
-                  label={val}
-                />
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset role="radiogroup" aria-labelledby="g-cont">
-            <GroupHead
-              id="g-cont"
-              step="06"
-              title="Já tenho o conteúdo (textos e fotos)?"
-              note="(não muda o preço)"
-            />
-            <div className="mt-3 flex flex-wrap gap-2.5">
-              {(["Sim", "Não"] as const).map((val) => (
-                <Chip
-                  key={val}
-                  type="radio"
-                  name="ctx_conteudo"
-                  active={state.ctxConteudo === val}
-                  onPick={() => setState((s) => ({ ...s, ctxConteudo: val }))}
-                  mode={mode}
-                  label={val}
+                  label={PRAZO_OPT[key]}
                 />
               ))}
             </div>
           </fieldset>
         </form>
 
-        {/* ---------------- COLUNA: RESUMO AO VIVO ---------------- */}
+        {/* ---------------- COLUNA: FAIXA DE PARTIDA ---------------- */}
         <aside
           className="rounded-[18px] bg-ink p-7 text-paper sm:p-8 md:sticky md:top-[88px]"
-          aria-label="Resumo da cotação"
+          aria-label="Faixa de investimento"
         >
           <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[#a89f8c]">
-            Investimento estimado
+            Faixa de investimento
           </p>
           {/* Visível: odômetro + prazo (aria-hidden; o anúncio ao vivo é o
               status sr-only abaixo, pra não ler os dígitos rolando). */}
@@ -397,19 +324,15 @@ export function Configurator() {
               {result.days} {result.days === 1 ? "dia útil" : "dias úteis"}
             </strong>
           </p>
-          {/* Anúncio combinado pra leitores de tela: preço + prazo, ao vivo. */}
           <p role="status" aria-live="polite" className="sr-only">
-            Investimento estimado {fmt(result.total)} a partir de. Prazo
+            Faixa de investimento {fmt(result.total)} a partir de. Prazo
             aproximado {result.days}{" "}
             {result.days === 1 ? "dia útil" : "dias úteis"}.
           </p>
 
           <ul className="mt-5 border-t border-[#322d23] pt-4 text-[0.86rem] text-[#cdc6b6]">
             {result.items.map((item) => (
-              <li
-                key={item.label}
-                className="flex justify-between gap-3 py-1"
-              >
+              <li key={item.label} className="flex justify-between gap-3 py-1">
                 <span>{item.label}</span>
                 <span className={item.express ? "text-accent" : "text-white"}>
                   {item.express ? "+ " : ""}
@@ -460,11 +383,10 @@ export function Configurator() {
             href={waHref}
             className="btn btn-accent mt-6 w-full justify-center"
           >
-            <span>Receber proposta no WhatsApp</span>
+            <span>Mandar pro WhatsApp e conversar</span>
           </a>
           <p className="mt-3 text-[0.72rem] leading-snug text-[#a89f8c]">
-            Estimativa pra você ter a faixa. O valor final sai depois de eu
-            entender seu projeto, sem compromisso.
+            Esse é o ponto de partida da nossa conversa, não a conta final.
           </p>
         </aside>
       </div>
@@ -488,7 +410,7 @@ export function Configurator() {
           href={waHref}
           className="btn btn-accent flex-1 justify-center whitespace-nowrap"
         >
-          <span>Receber proposta</span>
+          <span>Conversar</span>
         </a>
       </div>
     </>

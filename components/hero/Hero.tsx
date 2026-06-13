@@ -1,23 +1,25 @@
 "use client";
 
 /* ============================================================================
-   HERO — vocabulário "impresso vivo" (motion.md):
+   HERO — vocabulário "impresso vivo" (motion.md). Copy E1: o argumento abre
+   com a tensão entre o valor do trabalho e a fachada digital.
    1. Kicker mono digitado com caret que some ao terminar.
-   2. Título linha a linha por wipe de clip-path vertical + settle de 8px.
-   3. Sublinhado de tinta (stroke SVG, pincelada) traçado após o settle.
+   2. Título linha a linha por wipe de clip-path + settle de 8px.
+   3. Sublinhado de tinta (stroke SVG) traçado sob a frase de acento.
    4. Sub, CTAs e stats por fade + settle com stagger. Depois, REPOUSO.
 
-   Progressive enhancement: o HTML servido é o estado final completo.
-   Os estados escondidos só são aplicados via gsap DEPOIS do mount; sem JS
-   (ou em capture/reduced motion) a página fica estática e completa.
+   Progressive enhancement: o HTML servido é o estado final completo. Os
+   estados escondidos só são aplicados via gsap DEPOIS do mount; sem JS (ou
+   em capture/reduced motion) a página fica estática e completa.
+   (E1 não adiciona motion novo: a timeline é a mesma da Fase B1.)
 ============================================================================ */
 import { useEffect, useRef } from "react";
-import Link from "next/link";
-import gsap from "gsap";
 import { waLink } from "@/lib/contact";
 import { DUR, EASE, HERO_SETTLE_Y, SETTLE_Y, STAGGER, useMotion } from "@/lib/motion";
+import gsap from "gsap";
 
-const KICKER = "Zenaxis · Sites, automação e IA";
+const KICKER = "Zenaxis · Infraestrutura digital de alta conversão";
+const WA_MSG = "Olá! Quero conversar sobre a infraestrutura digital do meu negócio.";
 const SECONDS_PER_CHAR = 0.018;
 
 export function Hero() {
@@ -38,7 +40,6 @@ export function Hero() {
       );
       const risers = gsap.utils.toArray<HTMLElement>("[data-rise]", el);
 
-      /* Estados iniciais, aplicados só agora (pós mount, pós primeiro paint). */
       gsap.set(lines, { clipPath: "inset(0% 0% 100% 0%)", y: HERO_SETTLE_Y });
       gsap.set(risers, { opacity: 0, y: SETTLE_Y });
       for (const path of strokes) {
@@ -49,7 +50,6 @@ export function Hero() {
 
       const tl = gsap.timeline();
 
-      /* 1. Kicker: máquina de escrever rápida. */
       if (kickerText) {
         const typing = { count: 0 };
         gsap.set(caret, { opacity: 1 });
@@ -65,11 +65,9 @@ export function Hero() {
           },
           0,
         );
-        /* O caret some ao terminar (não pisca pra sempre). */
         tl.to(caret, { opacity: 0, duration: 0.2, ease: "none" }, ">+0.15");
       }
 
-      /* 2. Título: tinta aplicada por rolo, linha a linha, settle de 8px. */
       tl.to(
         lines,
         {
@@ -83,8 +81,6 @@ export function Hero() {
         0.25,
       );
 
-      /* 3. Sublinhado de tinta: se traça da esquerda pra direita após o
-         título assentar. */
       tl.to(
         strokes,
         {
@@ -96,7 +92,6 @@ export function Hero() {
         1.15,
       );
 
-      /* 4. Sub, CTAs e stats: fade + settle com stagger. Fim = repouso. */
       tl.to(
         risers,
         {
@@ -120,15 +115,14 @@ export function Hero() {
         <span data-caret aria-hidden="true" className="type-caret" />
       </p>
 
-      <h1 className="mt-6 max-w-[15ch] font-display text-[clamp(2.15rem,7vw,5.4rem)] font-[340] leading-[1.04] tracking-[-0.025em]">
+      <h1 className="mt-6 max-w-[16ch] font-display text-[clamp(2.15rem,6.4vw,5rem)] font-[340] leading-[1.04] tracking-[-0.025em]">
         <span data-line className="block">
-          Eu não entrego site.
+          Seu trabalho vale caro.
         </span>
-        <span data-line className="block">
-          Entrego o que ele
-        </span>
-        <span data-line className="relative inline-block">
-          <em className="text-accent">faz pelo seu negócio.</em>
+        <span data-line className="relative block">
+          <em className="text-accent">
+            Seu site faz o cliente duvidar disso.
+          </em>
           <svg
             data-underline
             aria-hidden="true"
@@ -137,7 +131,6 @@ export function Hero() {
             fill="none"
             className="absolute bottom-[-0.08em] left-0 h-[0.14em] w-full"
           >
-            {/* Pincelada: traço principal + fiapo fino deslocado. */}
             <path
               d="M4 8 C 64 3.5, 148 11.5, 316 6.5"
               stroke="var(--color-accent)"
@@ -157,23 +150,23 @@ export function Hero() {
 
       <p
         data-rise
-        className="mt-7 max-w-[52ch] text-[clamp(1.05rem,2.2vw,1.28rem)] leading-normal text-ink-soft"
+        className="mt-7 max-w-[54ch] text-[clamp(1.05rem,2.2vw,1.28rem)] leading-normal text-ink-soft"
       >
-        Presença digital que parece feita por gente, não por template: design
-        distintivo, automação e IA sob medida. Do pequeno comércio à empresa
-        que já fatura. A régua é a mesma: resultado.
+        Você é referência no que faz. Mas quando alguém te encontra na
+        internet, a primeira impressão não conta a sua história, e é nela que o
+        cliente decide quanto você pode cobrar.
       </p>
 
       <div data-rise className="mt-9 flex flex-wrap items-center gap-6">
-        <a href={waLink()} className="btn btn-accent btn-lg">
-          <span>Quero um orçamento</span>
+        <a href={waLink(WA_MSG)} className="btn btn-accent btn-lg">
+          <span>Falar com a Zenaxis</span>
         </a>
-        <Link
-          href="/cotacao"
+        <a
+          href="#como-funciona"
           className="link-ink inline-block text-[1.02rem] font-semibold text-ink"
         >
-          Simular investimento
-        </Link>
+          Ver como funciona
+        </a>
       </div>
 
       <dl className="mt-12 flex flex-wrap gap-9 border-t border-line pt-7">

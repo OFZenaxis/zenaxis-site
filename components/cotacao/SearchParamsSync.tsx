@@ -26,7 +26,7 @@ export function SearchParamsSync({
     if (applied.current) return;
     applied.current = true;
     onApply(new URLSearchParams(window.location.search));
-  }, [sp]);
+  }, [sp, onApply]);
 
   return null;
 }

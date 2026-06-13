@@ -76,19 +76,48 @@ try {
      visível no HTML servido, sem nenhum estado escondido inline. */
   check(
     "hero: kicker completo no HTML servido",
-    html.includes("Zenaxis · Sites, automação e IA"),
+    html.includes("Zenaxis · Infraestrutura digital de alta conversão"),
   );
   check(
     "hero: título completo no HTML servido",
-    html.includes("Eu não entrego site.") &&
-      html.includes("Entrego o que ele") &&
-      html.includes("faz pelo seu negócio."),
+    html.includes("Seu trabalho vale caro.") &&
+      html.includes("Seu site faz o cliente duvidar disso."),
   );
   check(
     "hero: stats concretos no HTML servido",
     html.includes("24h a 7d") &&
       html.includes("95+") &&
       html.includes("Você aprova"),
+  );
+
+  /* E1: as frases-âncora do ARGUMENTO presentes no HTML servido (sem JS).
+     Garante que toda a copy de persuasão é renderizada no servidor. */
+  const ANCHORS = [
+    ["Tensão (O vazamento)", "Perdeu pela sua fachada"],
+    ["Virada", "não desenha telas"],
+    ["Prova", "Vou te pedir pra testar"],
+    ["Diagnóstico", "Esse é o meu trabalho"],
+    ["Fecho", "já sabe o próximo passo"],
+    ["eixo: infraestrutura", "infraestrutura que sustente o preço que você cobra"],
+  ];
+  for (const [secao, frase] of ANCHORS) {
+    check(`argumento [${secao}] no HTML servido`, html.includes(frase), `"${frase}"`);
+  }
+  check(
+    "sem hífen/travessão na copy âncora",
+    !ANCHORS.some(([, f]) => /[–—]/.test(f) || /\w-\w/.test(f)),
+  );
+
+  /* Âncoras internas (nav + hero) resolvem para ids que existem no HTML.
+     Pega regressão de link morto (ex.: seção removida sem atualizar a nav). */
+  const anchorIds = [
+    ...new Set([...html.matchAll(/href="\/?#([a-z0-9-]+)"/g)].map((m) => m[1])),
+  ];
+  const deadAnchors = anchorIds.filter((id) => !new RegExp(`id="${id}"`).test(html));
+  check(
+    "âncoras internas resolvem para ids existentes (nav/hero)",
+    deadAnchors.length === 0,
+    deadAnchors.length ? `mortas: ${deadAnchors.join(", ")}` : `${anchorIds.length} ok`,
   );
   check(
     "sem opacity:0 inline no HTML servido (estado escondido só via JS)",
@@ -103,15 +132,6 @@ try {
   check(
     "link do Forja (treinolandpage) no HTML servido",
     html.includes('href="https://treinolandpage.zenaxis.com.br"'),
-  );
-  const caseImgs = [
-    ...html.matchAll(/<img[^>]+(?:\/cases\/|%2Fcases%2F)[^>]*>/g),
-  ].map((m) => m[0]);
-  check(
-    "2 imagens de case com width/height no HTML servido",
-    caseImgs.length === 2 &&
-      caseImgs.every((tag) => /width="\d+"/.test(tag) && /height="\d+"/.test(tag)),
-    `${caseImgs.length} imagens`,
   );
   check(
     "vídeo do Forja com preload none e poster (lazy)",

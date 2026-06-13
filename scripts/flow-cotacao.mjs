@@ -74,10 +74,12 @@ try {
       .filter({ hasText: label })
       .count();
 
-  ok("chip tipo=Sistema / Web app pré-marcado", (await activeChip("tipo", "Sistema")) === 1);
-  ok("chip extra=Automação + IA pré-marcado", (await activeChip("extras", "Automação + IA")) === 1);
-  ok("chip extra=CRM pré-marcado", (await activeChip("extras", "CRM")) === 1);
-  ok("porte default Médio pré-marcado", (await activeChip("porte", "Médio")) === 1);
+  /* Rótulos humanos do diagnóstico (E1), mas as chaves do motor por trás
+     (tipo=sistema, extras=ia,crm, porte=medio) seguem idênticas. */
+  ok("objetivo=sistema pré-marcado (rótulo 'operação completa')", (await activeChip("tipo", "operação completa")) === 1);
+  ok("gargalo=ia pré-marcado (rótulo 'mesmas perguntas')", (await activeChip("extras", "mesmas perguntas")) === 1);
+  ok("gargalo=crm pré-marcado (rótulo 'Perco contatos')", (await activeChip("extras", "Perco contatos")) === 1);
+  ok("tamanho=medio default (rótulo 'equipe pequena')", (await activeChip("porte", "equipe pequena")) === 1);
 
   /* 2. Total exibido bate com o motor pra {sistema, extras:[ia,crm]}. */
   const expected1 = calc({ tipo: "sistema", extras: ["ia", "crm"] });
@@ -90,9 +92,9 @@ try {
   );
   ok("dias exibido = motor", Number(days1) === expected1.days, `${days1} vs ${expected1.days}`);
 
-  /* 3. Clica porte robusto + prazo expresso. */
-  await page.locator(`label.chip:has(input[name="porte"])`).filter({ hasText: "Robusto" }).click();
-  await page.locator(`label.chip:has(input[name="prazo"])`).filter({ hasText: "Expresso" }).click();
+  /* 3. Clica porte robusto ("várias frentes") + prazo expresso ("urgente"). */
+  await page.locator(`label.chip:has(input[name="porte"])`).filter({ hasText: "várias frentes" }).click();
+  await page.locator(`label.chip:has(input[name="prazo"])`).filter({ hasText: "urgente" }).click();
   await page.waitForTimeout(400);
 
   const expected2 = calc({

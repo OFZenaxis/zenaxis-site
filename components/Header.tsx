@@ -20,22 +20,22 @@ export function Header({ variant = "full" }: { variant?: HeaderVariant }) {
         {variant === "full" ? (
           <nav aria-label="Principal" className="flex items-center gap-7">
             <Link
-              href="/#servicos"
+              href="/#como-funciona"
               className="link-ink hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:inline-block"
             >
-              Serviços
+              Como funciona
             </Link>
             <Link
-              href="/#cases"
+              href="/#prova"
               className="link-ink hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:inline-block"
             >
-              Projetos
+              A prova
             </Link>
             <Link
-              href="/cotacao"
+              href="/#diagnostico"
               className="link-ink hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:inline-block"
             >
-              Cotação
+              Diagnóstico
             </Link>
             <a href={waLink()} className="btn btn-dark">
               <span>Falar no WhatsApp</span>
