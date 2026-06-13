@@ -63,6 +63,33 @@ try {
     );
   }
 
+  /* Progressive enhancement (Fase B1): todo o texto do hero presente e
+     visível no HTML servido, sem nenhum estado escondido inline. */
+  check(
+    "hero: kicker completo no HTML servido",
+    html.includes("Zenaxis · Sites, automação e IA"),
+  );
+  check(
+    "hero: título completo no HTML servido",
+    html.includes("Eu não entrego site.") &&
+      html.includes("Entrego o que ele") &&
+      html.includes("faz pelo seu negócio."),
+  );
+  check(
+    "hero: stats concretos no HTML servido",
+    html.includes("24h a 7d") &&
+      html.includes("95+") &&
+      html.includes("Você aprova"),
+  );
+  check(
+    "sem opacity:0 inline no HTML servido (estado escondido só via JS)",
+    !/style="[^"]*opacity:\s*0/.test(html) && !/opacity:0/.test(html),
+  );
+  check(
+    "sem clip-path inline no HTML servido",
+    !/style="[^"]*clip-path/.test(html),
+  );
+
   const cotacao = await fetch(ORIGIN + "/cotacao");
   const cotacaoHtml = await cotacao.text();
   check("/cotacao responde 200", cotacao.status === 200);

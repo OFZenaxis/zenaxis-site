@@ -45,7 +45,17 @@ body {
    Portanto: botão de acento usa accent-deep como FUNDO EM REPOUSO e
    accent apenas no HOVER/realce. Nunca usar --accent puro como fundo de texto.
 ============================================================================ */
+/* Easings da linguagem (motion.md): decisivos, sem bounce.
+   Espelham EASE de lib/motion/constants.ts. */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);    /* expo.out */
+  --ease-settle: cubic-bezier(0.25, 1, 0.5, 1); /* quart.out */
+}
+
 .btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -54,40 +64,81 @@ body {
   padding: 11px 20px;
   border-radius: 100px;
   border: 1.5px solid transparent;
-  transition: transform 0.25s, background 0.25s, color 0.25s, border-color 0.25s;
+  transition: transform 0.25s var(--ease-settle), color 0.25s var(--ease-settle);
 }
 .btn:hover { transform: translateY(-2px); }
 .btn-lg { padding: 16px 30px; font-size: 1.02rem; }
+
+/* Preenchimento de tinta (motion.md): a cor de hover desliza da esquerda
+   via scaleX, nada de troca seca de cor. O rótulo fica num <span> acima. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--ease-settle);
+}
+.btn:hover::before { transform: scaleX(1); }
+.btn > span { position: relative; z-index: 1; }
 
 .btn-accent {
   background: var(--color-accent-deep);
   border-color: var(--color-accent-deep);
   color: #fff;
 }
-.btn-accent:hover {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-}
+.btn-accent::before { background: var(--color-accent); }
 
 .btn-dark {
   background: var(--color-ink);
   border-color: var(--color-ink);
   color: var(--color-paper);
 }
-.btn-dark:hover {
-  background: var(--color-accent-deep);
-  border-color: var(--color-accent-deep);
-  color: #fff;
-}
+.btn-dark::before { background: var(--color-accent-deep); }
+.btn-dark:hover { color: #fff; }
 
 .btn-ghost {
   background: transparent;
   border-color: var(--color-ink);
   color: var(--color-ink);
 }
-.btn-ghost:hover {
-  background: var(--color-ink);
-  color: var(--color-paper);
+.btn-ghost::before { background: var(--color-ink); }
+.btn-ghost:hover { color: var(--color-paper); }
+
+/* Link com sublinhado que se traça no hover e se destraça na saída
+   (motion.md, microinterações). */
+/* Não define display: quem usa escolhe (evita brigar com hidden/sm:block). */
+.link-ink {
+  position: relative;
+}
+.link-ink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1.5px;
+  background: var(--color-accent-deep);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.35s var(--ease-settle);
+}
+.link-ink:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Caret da digitação do kicker. Decorativo: começa invisível e só o JS
+   liga durante a digitação (sem JS nunca aparece, o texto fica inteiro). */
+.type-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 3px;
+  vertical-align: -0.12em;
+  background: var(--color-accent);
+  opacity: 0;
 }
 
 /* Foco visível por teclado em qualquer interativo. */
@@ -99,5 +150,5 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto; }
-  .btn { transition: none; }
+  .btn, .btn::before, .link-ink::after { transition: none; }
 }

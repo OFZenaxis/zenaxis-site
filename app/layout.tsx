@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/Footer";
+import { MotionProvider } from "@/lib/motion";
 import "./globals.css";
 
 /* Fontes da marca via next/font (self-hosted no build, zero request externo).
@@ -59,8 +60,10 @@ export default function RootLayout({
       className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        {children}
-        <Footer />
+        <MotionProvider>
+          {children}
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );

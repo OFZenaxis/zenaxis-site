@@ -1,39 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { waLink } from "@/lib/contact";
+import { Hero } from "@/components/hero/Hero";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/* Placeholder da Fase A: estrutura semântica e conteúdo mínimo.
-   As seções visuais (hero animado, cases, cotação viva) chegam na Fase B. */
+/* Hero definitivo (Fase B1). As demais seções seguem placeholder
+   e ganham o tratamento visual na B2. */
 export default function Home() {
   return (
     <>
-      <section className="mx-auto max-w-[1180px] px-7 py-20">
-        <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-soft">
-          Zenaxis · Sites, automação e IA
-        </p>
-        <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(2.6rem,7vw,5.4rem)] font-[340] leading-[1.02] tracking-[-0.025em]">
-          Eu não entrego site.
-          <br />
-          Entrego o que ele <em className="text-accent">faz pelo seu negócio.</em>
-        </h1>
-        <p className="mt-7 max-w-[52ch] text-[clamp(1.05rem,2.2vw,1.28rem)] leading-normal text-ink-soft">
-          Presença digital que parece feita por gente, não por template: design
-          distintivo, automação e IA sob medida. Do pequeno comércio à empresa
-          que já fatura. A régua é a mesma: resultado.
-        </p>
-        <div className="mt-9 flex flex-wrap items-center gap-3.5">
-          <a href={waLink()} className="btn btn-accent btn-lg">
-            Quero um orçamento
-          </a>
-          <Link href="/cotacao" className="btn btn-ghost btn-lg">
-            Simular investimento
-          </Link>
-        </div>
-      </section>
+      <Hero />
 
       <section id="servicos" className="mx-auto max-w-[1180px] px-7 py-16">
         <h2 className="font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-tight tracking-tight">
@@ -91,7 +69,7 @@ export default function Home() {
           minutos o que dá pra construir.
         </p>
         <a href={waLink()} className="btn btn-accent btn-lg mt-8">
-          Começar agora
+          <span>Começar agora</span>
         </a>
       </section>
     </>

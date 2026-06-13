@@ -29,7 +29,7 @@ export default function CotacaoPage() {
         aproximado de <strong className="text-ink">{base.days} dias úteis</strong>.
       </p>
       <a href={waHref} className="btn btn-accent btn-lg mt-8">
-        Receber proposta no WhatsApp
+        <span>Receber proposta no WhatsApp</span>
       </a>
     </section>
   );

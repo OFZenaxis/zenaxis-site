@@ -25,14 +25,14 @@ export function Footer() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium hover:text-ink"
+            className="link-ink font-medium hover:text-ink"
           >
             Instagram {INSTAGRAM_HANDLE}
           </a>
-          <a href={waLink()} className="font-medium hover:text-ink">
+          <a href={waLink()} className="link-ink font-medium hover:text-ink">
             WhatsApp
           </a>
-          <a href={EMAIL_URL} className="font-medium hover:text-ink">
+          <a href={EMAIL_URL} className="link-ink font-medium hover:text-ink">
             {EMAIL}
           </a>
         </nav>

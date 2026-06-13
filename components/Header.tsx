@@ -21,30 +21,30 @@ export function Header({ variant = "full" }: { variant?: HeaderVariant }) {
           <nav aria-label="Principal" className="flex items-center gap-7">
             <Link
               href="/#servicos"
-              className="hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:block"
+              className="link-ink hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:inline-block"
             >
               Serviços
             </Link>
             <Link
               href="/#cases"
-              className="hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:block"
+              className="link-ink hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:inline-block"
             >
               Projetos
             </Link>
             <Link
               href="/cotacao"
-              className="hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:block"
+              className="link-ink hidden text-[0.92rem] font-medium text-ink-soft hover:text-ink sm:inline-block"
             >
               Cotação
             </Link>
             <a href={waLink()} className="btn btn-dark">
-              Falar no WhatsApp
+              <span>Falar no WhatsApp</span>
             </a>
           </nav>
         ) : (
           <nav aria-label="Principal">
             <Link href="/" className="btn btn-ghost">
-              Voltar ao início
+              <span>Voltar ao início</span>
             </Link>
           </nav>
         )}
