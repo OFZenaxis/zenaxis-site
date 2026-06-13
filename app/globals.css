@@ -129,6 +129,16 @@ body {
   transform-origin: left center;
 }
 
+/* Papel levantado da mesa (motion.md, cases): sombra cresce, sobe 4px.
+   Sem tilt 3D, sem glow. */
+.paper-lift {
+  transition: transform 0.3s var(--ease-settle), box-shadow 0.3s var(--ease-settle);
+}
+.paper-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 50px -28px rgba(22, 19, 13, 0.45);
+}
+
 /* Caret da digitação do kicker. Decorativo: começa invisível e só o JS
    liga durante a digitação (sem JS nunca aparece, o texto fica inteiro). */
 .type-caret {
@@ -150,5 +160,5 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto; }
-  .btn, .btn::before, .link-ink::after { transition: none; }
+  .btn, .btn::before, .link-ink::after, .paper-lift { transition: none; }
 }

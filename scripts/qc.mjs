@@ -90,6 +90,27 @@ try {
     !/style="[^"]*clip-path/.test(html),
   );
 
+  /* Fase B2: prova navegável e imagens de case corretas. */
+  check(
+    "link do Forja (treinolandpage) no HTML servido",
+    html.includes('href="https://treinolandpage.zenaxis.com.br"'),
+  );
+  const caseImgs = [
+    ...html.matchAll(/<img[^>]+(?:\/cases\/|%2Fcases%2F)[^>]*>/g),
+  ].map((m) => m[0]);
+  check(
+    "2 imagens de case com width/height no HTML servido",
+    caseImgs.length === 2 &&
+      caseImgs.every((tag) => /width="\d+"/.test(tag) && /height="\d+"/.test(tag)),
+    `${caseImgs.length} imagens`,
+  );
+  check(
+    "vídeo do Forja com preload none e poster (lazy)",
+    /<video[^>]+preload="none"[^>]+poster="\/video\/forja-poster\.webp"/.test(
+      html,
+    ) || /<video[^>]+poster="\/video\/forja-poster\.webp"[^>]+preload="none"/.test(html),
+  );
+
   const cotacao = await fetch(ORIGIN + "/cotacao");
   const cotacaoHtml = await cotacao.text();
   check("/cotacao responde 200", cotacao.status === 200);
