@@ -34,10 +34,14 @@ export function Hero() {
       const kickerText = el.querySelector<HTMLElement>("[data-kicker-text]");
       const caret = el.querySelector<HTMLElement>("[data-caret]");
       const lines = gsap.utils.toArray<HTMLElement>("[data-line]", el);
+      const underline = el.querySelector<HTMLElement>("[data-underline]");
       const risers = gsap.utils.toArray<HTMLElement>("[data-rise]", el);
 
       gsap.set(lines, { clipPath: "inset(0% 0% 100% 0%)", y: HERO_SETTLE_Y });
       gsap.set(risers, { opacity: 0, y: SETTLE_Y });
+      /* Sublinhado começa invisível (camada de cima recortada à direita) e
+         só se traça DEPOIS do título assentar. */
+      gsap.set(underline, { clipPath: "inset(0 100% 0 0)" });
       if (kickerText) kickerText.textContent = "";
 
       const tl = gsap.timeline();
@@ -84,6 +88,16 @@ export function Hero() {
         },
         0.6,
       );
+
+      /* A assinatura: o sublinhado se traça da esquerda pra direita, em
+         power3.out, DEPOIS do título assentar (não junto). Como a camada de
+         baixo é o brush por linha (box-decoration-break), revelar por
+         clip-path nunca estoura — em 2+ linhas a tinta espalha da esquerda. */
+      tl.to(
+        underline,
+        { clipPath: "inset(0 0% 0 0)", duration: DUR.slow, ease: EASE.draw },
+        1.05,
+      );
     }, el);
 
     return () => ctx.revert();
@@ -106,12 +120,19 @@ export function Hero() {
         <span data-line className="block">
           Seu trabalho vale caro.
         </span>
-        <span data-line className="block">
-          {/* Sublinhado de tinta por linha (background, box-decoration-break):
-              acompanha o texto mesmo quebrando. Hook data-underline pra E2b. */}
-          <em data-underline className="hero-ink-underline text-accent">
+        <span data-line className="relative block">
+          {/* Camada 1: o texto (sempre visível, PE). */}
+          <em className="text-accent">Seu site faz o cliente duvidar disso.</em>
+          {/* Camada 2: overlay com o MESMO texto (transparente) só pra
+              carregar o sublinhado por linha (box-decoration-break, nunca
+              estoura). Sem JS fica 100% revelado; o gsap recorta e traça. */}
+          <span
+            data-underline
+            aria-hidden="true"
+            className="hero-ink-underline pointer-events-none absolute inset-0 text-transparent"
+          >
             Seu site faz o cliente duvidar disso.
-          </em>
+          </span>
         </span>
       </h1>
 

@@ -14,7 +14,9 @@
    barra fixa mobile, href wa.me real no servidor (progressive enhancement),
    press de carimbo e tinta por wipe (motion.md). Nenhum motion novo.
 ============================================================================ */
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   DATA,
   type ExtraKey,
@@ -26,9 +28,19 @@ import {
   calc,
   fmt,
 } from "@/lib/pricing";
-import { stampPress, useMotion, type MotionMode } from "@/lib/motion";
+import {
+  DUR,
+  EASE,
+  SETTLE_Y,
+  STAGGER,
+  stampPress,
+  useMotion,
+  type MotionMode,
+} from "@/lib/motion";
 import { Odometer } from "./Odometer";
 import { SearchParamsSync } from "./SearchParamsSync";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface UIState {
   tipo: TipoKey;
@@ -142,6 +154,7 @@ export function Configurator() {
   const { mode } = useMotion();
   const [state, setState] = useState<UIState>(DEFAULT);
   const [ready, setReady] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   /* Pré-preenchimento via URL (uma vez), validado contra o motor.
      As chaves da URL são as do MOTOR (tipo/porte/prazo/extras), não os
@@ -181,6 +194,31 @@ export function Configurator() {
     window.history.replaceState(null, "", `?${p.toString()}`);
   }, [state.tipo, state.porte, state.prazo, state.extras, ready]);
 
+  /* E2b: os grupos do diagnóstico entram em stagger conforme aparecem (a
+     ferramenta parece viva). Reveal sutil, uma vez, respeitando mode static
+     e PE (gsap só esconde após o mount; clearProps transform pra não mexer
+     no sticky do painel). */
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el || mode === "static") return;
+    const ctx = gsap.context(() => {
+      const groups = [
+        ...el.querySelectorAll("fieldset"),
+        el.querySelector("aside"),
+      ].filter(Boolean) as HTMLElement[];
+      gsap.from(groups, {
+        opacity: 0,
+        y: SETTLE_Y,
+        duration: DUR.base,
+        ease: EASE.settle,
+        stagger: STAGGER.base,
+        clearProps: "transform",
+        scrollTrigger: { trigger: el, start: "top 82%", once: true },
+      });
+    }, el);
+    return () => ctx.revert();
+  }, [mode]);
+
   /* ---- Ponte com o MOTOR (sem duplicar lógica de preço) ---- */
   const engineState: QuoteState = {
     tipo: state.tipo,
@@ -207,7 +245,10 @@ export function Configurator() {
         <SearchParamsSync onApply={applyParams} />
       </Suspense>
 
-      <div className="grid items-start gap-10 md:grid-cols-[1.18fr_0.82fr]">
+      <div
+        ref={gridRef}
+        className="grid items-start gap-10 md:grid-cols-[1.18fr_0.82fr]"
+      >
         {/* ---------------- COLUNA: DIAGNÓSTICO ---------------- */}
         {/* min-w-0: evita que a coluna estoure a largura em telas estreitas. */}
         <form className="flex min-w-0 flex-col gap-9" onSubmit={(e) => e.preventDefault()}>
