@@ -1,25 +1,34 @@
 /* ============================================================================
-   QC da Fase A: sobe o build de produção e valida o HTML renderizado de /.
-   Checa: <main> landmark, link wa.me real em href, canonical zenaxis.com.br
-   e og:image presente e resolvível (200 + image/png no servidor local).
-   Uso: npm run build && npm run qc
+   QC: valida o HTML renderizado de / e /cotacao.
+   Checa: <main> landmark, links wa.me reais no href, canonical zenaxis.com.br,
+   og:image resolvível, radiogroup na cotação, lazy do vídeo, etc.
+
+   Uso local:    npm run build && npm run qc
+   Uso staging:  QC_URL=https://xxxx.hstgr.cloud npm run qc
+                 (ou: node scripts/qc.mjs https://xxxx.hstgr.cloud)
+   Com URL externa, NÃO sobe servidor local — testa a URL passada.
 ============================================================================ */
 import { spawn } from "node:child_process";
 
+const EXTERNAL = (process.env.QC_URL || process.argv[2] || "").replace(/\/$/, "");
 const PORT = 3105;
-const ORIGIN = `http://localhost:${PORT}`;
+const ORIGIN = EXTERNAL || `http://localhost:${PORT}`;
 const failures = [];
+
+console.log(`QC alvo: ${ORIGIN}${EXTERNAL ? "  (staging/externo)" : "  (build local)"}\n`);
 
 function check(name, ok, extra = "") {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}${extra ? `  (${extra})` : ""}`);
   if (!ok) failures.push(name);
 }
 
-const server = spawn(
-  process.execPath,
-  ["node_modules/next/dist/bin/next", "start", "-p", String(PORT)],
-  { stdio: "ignore" },
-);
+const server = EXTERNAL
+  ? null
+  : spawn(
+      process.execPath,
+      ["node_modules/next/dist/bin/next", "start", "-p", String(PORT)],
+      { stdio: "ignore" },
+    );
 
 try {
   let up = false;
@@ -110,6 +119,14 @@ try {
       html,
     ) || /<video[^>]+poster="\/video\/forja-poster\.webp"[^>]+preload="none"/.test(html),
   );
+  check(
+    "fontes self-hosted (sem request pro Google Fonts)",
+    !/fonts\.googleapis\.com/.test(html) && !/fonts\.gstatic\.com/.test(html),
+  );
+  check(
+    "fontes servidas pelo próprio app (/_next/static/media)",
+    /\/_next\/static\/media\/[^"]+\.(woff2?|ttf)/.test(html),
+  );
 
   const cotacao = await fetch(ORIGIN + "/cotacao");
   const cotacaoHtml = await cotacao.text();
@@ -145,7 +162,7 @@ try {
   check("robots.txt responde 200", robots.status === 200);
   check("sitemap.xml responde 200", sitemap.status === 200);
 } finally {
-  server.kill();
+  if (server) server.kill();
 }
 
 if (failures.length) {
