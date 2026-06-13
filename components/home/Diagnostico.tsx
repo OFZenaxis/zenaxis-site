@@ -16,19 +16,16 @@ export function Diagnostico() {
   const root = useReveal<HTMLDivElement>({ selector: "[data-rise]" });
 
   return (
-    <section id="diagnostico" className="mx-auto max-w-[1180px] px-7 py-16 sm:py-20">
+    <section id="diagnostico" className="mx-auto max-w-[1180px] px-7 py-20 sm:py-28">
       <SectionLabel title="O projeto" />
 
-      <div ref={root} className="mt-10">
-        <h2
-          data-rise
-          className="max-w-[24ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.08] tracking-tight"
-        >
+      <div ref={root} className="mt-12">
+        <h2 data-rise className="t-h2 max-w-[24ch] text-balance">
           Você não precisa saber o que pedir.{" "}
           <em className="text-accent">Esse é o meu trabalho.</em>
         </h2>
 
-        <div className="mt-7 max-w-[64ch] space-y-5 text-[1.05rem] leading-relaxed text-ink-soft sm:text-[1.12rem]">
+        <div className="measure t-body mt-8 space-y-6 text-ink-soft">
           <p data-rise>
             A essa altura você provavelmente pensou eu preciso disso, mas nem
             sei por onde começar. Site? Automação? As duas coisas? Que tipo? É
@@ -44,28 +41,22 @@ export function Diagnostico() {
         </div>
 
         {/* Cabeçalho do bloco interativo (a instrução do diagnóstico). */}
-        <h3
-          data-rise
-          className="mt-12 font-display text-[clamp(1.4rem,3vw,2rem)] font-medium tracking-tight"
-        >
+        <h3 data-rise className="t-h3 mt-14">
           Me mostre seu negócio em 2 minutos.
         </h3>
-        <p data-rise className="mt-2 max-w-[52ch] text-ink-soft">
+        <p data-rise className="t-body mt-2.5 max-w-[52ch] text-ink-soft">
           Responda como se estivesse me contando, e a faixa de investimento
           aparece na hora. Sem formulário, sem espera.
         </p>
 
-        <div className="mt-8">
+        <div className="mt-9">
           <Configurator />
         </div>
 
         {/* Atestado de capacidade: SaiuDelivery e PrimeTur como prova técnica
             textual, não cards grandes. */}
-        <div className="mt-14 max-w-[64ch]">
-          <p
-            data-rise
-            className="text-[1.05rem] leading-relaxed text-ink-soft sm:text-[1.12rem]"
-          >
+        <div className="measure mt-16">
+          <p data-rise className="t-body text-ink-soft">
             E se o seu negócio é dos complicados, com várias frentes, equipe,
             sistemas que não conversam, melhor ainda. Já construí um SaaS de
             delivery multiloja com pagamento e cozinha integrados, e um CRM de
@@ -84,7 +75,7 @@ export function Diagnostico() {
 
         <p
           data-rise
-          className="mt-12 max-w-[26ch] border-l-2 border-accent pl-6 font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-[340] leading-[1.14] tracking-tight"
+          className="t-quote mt-16 max-w-[26ch] border-l-[3px] border-accent pl-7"
         >
           Me conta o problema. Você sai dessa página com clareza,{" "}
           <span className="text-accent">não com lição de casa.</span>

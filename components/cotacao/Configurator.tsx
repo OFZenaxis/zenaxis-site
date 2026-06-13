@@ -209,7 +209,8 @@ export function Configurator() {
 
       <div className="grid items-start gap-10 md:grid-cols-[1.18fr_0.82fr]">
         {/* ---------------- COLUNA: DIAGNÓSTICO ---------------- */}
-        <form className="flex flex-col gap-9" onSubmit={(e) => e.preventDefault()}>
+        {/* min-w-0: evita que a coluna estoure a largura em telas estreitas. */}
+        <form className="flex min-w-0 flex-col gap-9" onSubmit={(e) => e.preventDefault()}>
           <fieldset role="radiogroup" aria-labelledby="g-tipo">
             <GroupHead
               id="g-tipo"
@@ -294,9 +295,13 @@ export function Configurator() {
           </fieldset>
         </form>
 
-        {/* ---------------- COLUNA: FAIXA DE PARTIDA ---------------- */}
+        {/* ---------------- COLUNA: FAIXA DE PARTIDA ----------------
+            Sticky no desktop: o painel acompanha a rolagem das perguntas
+            (top-[88px] = header 66px + folga). Como vive dentro do grid, ele
+            solta no fim das perguntas, sem nunca cobrir o rodapé. elev-high
+            dá a mesma elevação de ambiente do painel da Virada. */}
         <aside
-          className="rounded-[18px] bg-ink p-7 text-paper sm:p-8 md:sticky md:top-[88px]"
+          className="elev-high min-w-0 rounded-card bg-ink p-7 text-paper sm:p-8 md:sticky md:top-[88px]"
           aria-label="Faixa de investimento"
         >
           <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-[#a89f8c]">
@@ -394,7 +399,7 @@ export function Configurator() {
       {/* ---------------- BARRA FIXA MOBILE ---------------- */}
       {/* .mobile-quote-bar: o globals.css reserva 88px no fim do body via
           body:has(.mobile-quote-bar) — CSS puro, funciona sem JS. */}
-      <div className="mobile-quote-bar fixed inset-x-0 bottom-0 z-[60] flex items-center gap-3 border-t border-[#322d23] bg-ink px-4 py-3 text-paper shadow-[0_-10px_30px_-18px_rgba(22,19,13,0.7)] md:hidden">
+      <div className="mobile-quote-bar elev-high-up fixed inset-x-0 bottom-0 z-[60] flex items-center gap-3 border-t border-[#322d23] bg-ink px-4 py-3 text-paper md:hidden">
         <div className="flex flex-col leading-tight">
           <Odometer
             value={result.total}

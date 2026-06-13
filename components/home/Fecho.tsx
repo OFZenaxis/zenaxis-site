@@ -16,19 +16,16 @@ export function Fecho() {
   const root = useReveal<HTMLDivElement>({ selector: "[data-rise]" });
 
   return (
-    <section id="contato" className="mx-auto max-w-[1180px] px-7 py-16 sm:py-24">
+    <section id="contato" className="mx-auto max-w-[1180px] px-7 py-20 sm:py-28">
       <SectionLabel title="A conversa" />
 
-      <div ref={root} className="mt-10">
-        <h2
-          data-rise
-          className="max-w-[24ch] text-balance font-display text-[clamp(2rem,4.8vw,3.4rem)] font-[340] leading-[1.06] tracking-tight"
-        >
+      <div ref={root} className="mt-12">
+        <h2 data-rise className="t-h2 max-w-[24ch] text-balance">
           Você chegou até aqui.{" "}
           <em className="text-accent">Acho que já sabe o próximo passo.</em>
         </h2>
 
-        <div className="mt-7 max-w-[64ch] space-y-5 text-[1.05rem] leading-relaxed text-ink-soft sm:text-[1.12rem]">
+        <div className="measure t-body mt-8 space-y-6 text-ink-soft">
           <p data-rise>
             Você viu o problema que te custa caro, viu como eu resolvo, e testou
             na prática o nível do que eu entrego. Não vou te pressionar com

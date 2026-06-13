@@ -98,20 +98,14 @@ export function Prova() {
   }, [isCapture]);
 
   return (
-    <section ref={root} id="prova" className="mx-auto max-w-[1180px] px-7 py-16 sm:py-20">
+    <section ref={root} id="prova" className="mx-auto max-w-[1180px] px-7 py-20 sm:py-28">
       <SectionLabel title="A prova" />
 
-      <h2
-        data-rise
-        className="mt-10 max-w-[22ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.08] tracking-tight"
-      >
+      <h2 data-rise className="t-h2 mt-12 max-w-[22ch] text-balance">
         Não vou te pedir pra acreditar.{" "}
         <em className="text-accent">Vou te pedir pra testar.</em>
       </h2>
-      <p
-        data-rise
-        className="mt-6 max-w-[64ch] text-[1.05rem] leading-relaxed text-ink-soft sm:text-[1.12rem]"
-      >
+      <p data-rise className="t-body measure mt-7 text-ink-soft">
         Tudo que eu disse até aqui, carregamento instantâneo, estética com
         peso, estrutura que conduz, você não precisa levar na minha palavra. Eu
         construí uma demonstração e deixei no ar pra você abrir agora, do seu
@@ -119,13 +113,14 @@ export function Prova() {
         negócio.
       </p>
 
-      {/* FORJA: protagonista absoluto, full width. */}
+      {/* FORJA: protagonista absoluto, full width. paper-lift dá a elevação
+          de ambiente em repouso (elev-low) e cresce pra elev-high no hover. */}
       <a
         data-case
         href={FORJA_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="paper-lift group mt-10 grid overflow-hidden rounded-[18px] border border-line bg-card md:grid-cols-[1.15fr_0.85fr]"
+        className="paper-lift group mt-12 grid overflow-hidden rounded-card border border-line bg-card md:grid-cols-[1.15fr_0.85fr]"
       >
         <div className="border-line md:border-r">
           <div
@@ -168,10 +163,8 @@ export function Prova() {
               No ar
             </span>
           </div>
-          <h3 className="mt-3 font-display text-[clamp(1.6rem,2.6vw,2.1rem)] font-medium tracking-tight">
-            Forja
-          </h3>
-          <p className="mt-2.5 max-w-[42ch] text-[1rem] text-ink-soft">
+          <h3 className="t-h3 mt-3">Forja</h3>
+          <p className="t-body mt-2.5 max-w-[42ch] text-ink-soft">
             Uma landing de demonstração publicada de verdade. Abra do celular,
             role, repare no tempo de carga e na fluidez. É o nível de
             infraestrutura que entra no seu projeto.
@@ -183,10 +176,7 @@ export function Prova() {
       </a>
 
       {/* Direção do olhar. */}
-      <p
-        data-rise
-        className="mt-7 max-w-[64ch] text-[1.02rem] leading-relaxed text-ink-soft"
-      >
+      <p data-rise className="t-body measure mt-8 text-ink-soft">
         Repara no tempo que levou pra abrir. Na fluidez quando você rola. Em
         como cada detalhe parece pensado, porque foi. Isso é um projeto de
         demonstração. Imagina no seu.
@@ -195,7 +185,7 @@ export function Prova() {
       {/* Frase de fecho (golpe no trauma). */}
       <p
         data-rise
-        className="mt-10 max-w-[28ch] border-l-2 border-accent pl-6 font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-[340] leading-[1.14] tracking-tight"
+        className="t-quote mt-12 max-w-[28ch] border-l-[3px] border-accent pl-7"
       >
         A última agência te mostrou uma imagem e pediu confiança.{" "}
         <span className="text-accent">Eu te entrego a chave e peço dois minutos.</span>

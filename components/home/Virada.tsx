@@ -25,13 +25,13 @@ export function Virada() {
   return (
     <section
       id="como-funciona"
-      className="mx-auto max-w-[1180px] px-7 py-16 sm:py-20"
+      className="mx-auto max-w-[1180px] px-7 py-20 sm:py-28"
     >
       <SectionLabel title="A virada" />
 
       <div
         ref={root}
-        className="relative mt-8 overflow-hidden rounded-[28px] bg-ink px-7 py-12 text-paper sm:px-12 sm:py-16"
+        className="elev-high relative mt-10 overflow-hidden rounded-panel bg-ink px-7 py-14 text-paper sm:px-14 sm:py-20"
       >
         {/* Respingo de tinta estático no canto (decorativo, sem loop). */}
         <div
@@ -43,18 +43,12 @@ export function Virada() {
           }}
         />
 
-        <h2
-          data-rise
-          className="relative max-w-[22ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3rem)] font-[340] leading-[1.1] tracking-tight"
-        >
+        <h2 data-rise className="t-h2 relative max-w-[22ch] text-balance">
           A maioria te venderia um site novo.{" "}
           <span className="text-accent">Esse é o erro.</span>
         </h2>
 
-        <p
-          data-rise
-          className="relative mt-6 max-w-[60ch] text-[1.05rem] leading-relaxed text-[#cdc6b6]"
-        >
+        <p data-rise className="t-body relative mt-7 max-w-[58ch] text-[#cdc6b6]">
           Trocar um site template por um site bonito não resolve nada. Você só
           troca uma fachada por outra um pouco melhor, e em seis meses está no
           mesmo lugar, porque o problema nunca foi a aparência. Foi a falta de
@@ -62,16 +56,13 @@ export function Virada() {
         </p>
 
         {/* Frase de posicionamento (destaque). */}
-        <p
-          data-rise
-          className="relative mt-9 max-w-[28ch] font-display text-[clamp(1.5rem,3.2vw,2.2rem)] font-[360] leading-[1.16] tracking-tight"
-        >
+        <p data-rise className="t-quote relative mt-12 max-w-[26ch]">
           A Zenaxis não desenha telas. Constrói a{" "}
           <span className="text-accent">infraestrutura</span> que fica entre o
           seu cliente e o seu faturamento.
         </p>
 
-        <div className="relative mt-9 max-w-[60ch] space-y-5 text-[1.05rem] leading-relaxed text-[#cdc6b6]">
+        <div className="t-body relative mt-12 max-w-[58ch] space-y-6 text-[#cdc6b6]">
           <p data-rise>
             Quando o prospect abre o seu link, três coisas acontecem ao mesmo
             tempo: ele carrega em menos de um segundo, sente na estética que
@@ -88,10 +79,7 @@ export function Virada() {
         </div>
 
         {/* Frase de fecho (destaque, ecoa o hero). */}
-        <p
-          data-rise
-          className="relative mt-9 max-w-[30ch] font-display text-[clamp(1.5rem,3.2vw,2.2rem)] font-[360] leading-[1.16] tracking-tight"
-        >
+        <p data-rise className="t-quote relative mt-12 max-w-[28ch]">
           Você não precisa de um site melhor. Precisa de uma{" "}
           <span className="text-accent">
             infraestrutura que sustente o preço que você cobra.
@@ -101,7 +89,7 @@ export function Virada() {
         {/* Chips de capacidade: apoio visual discreto, não o foco. */}
         <ul
           data-rise
-          className="relative mt-10 flex flex-wrap gap-2.5 border-t border-[#322d23] pt-7"
+          className="relative mt-12 flex flex-wrap gap-2.5 border-t border-[#322d23] pt-8"
         >
           {CHIPS.map((chip) => (
             <li

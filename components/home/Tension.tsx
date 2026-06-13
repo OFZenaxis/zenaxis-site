@@ -13,18 +13,15 @@ export function Tension() {
   const root = useReveal<HTMLDivElement>({ selector: "[data-rise]" });
 
   return (
-    <section className="mx-auto max-w-[1180px] px-7 py-16 sm:py-24">
+    <section className="mx-auto max-w-[1180px] px-7 py-20 sm:py-28">
       <SectionLabel title="O vazamento" />
 
-      <div ref={root} className="mt-10">
-        <h2
-          data-rise
-          className="max-w-[24ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.08] tracking-tight"
-        >
+      <div ref={root} className="mt-12">
+        <h2 data-rise className="t-h2 max-w-[20ch] text-balance">
           A reunião foi perfeita. Aí você mandou o link.
         </h2>
 
-        <div className="mt-7 max-w-[64ch] space-y-5 text-[1.05rem] leading-relaxed text-ink-soft sm:text-[1.12rem]">
+        <div className="measure t-body mt-8 space-y-6 text-ink-soft">
           <p data-rise>
             O prospect estava aquecido. Gostou do serviço, entendeu o valor,
             pediu o site pra validar com os sócios antes de fechar. Você mandou
@@ -44,19 +41,16 @@ export function Tension() {
           </p>
         </div>
 
-        {/* O golpe da seção: pull quote tipográfico forte. */}
+        {/* O golpe da seção: pull quote isolado, com peso e respiro. */}
         <blockquote
           data-rise
-          className="mt-12 max-w-[20ch] border-l-2 border-accent pl-6 font-display text-[clamp(1.8rem,4.2vw,3rem)] font-[340] leading-[1.1] tracking-tight"
+          className="t-quote my-16 max-w-[26ch] border-l-[3px] border-accent pl-7 text-ink"
         >
           Você não perdeu o contrato pelo seu trabalho.{" "}
           <span className="text-accent">Perdeu pela sua fachada.</span>
         </blockquote>
 
-        <p
-          data-rise
-          className="mt-12 max-w-[64ch] text-[1.05rem] leading-relaxed text-ink-soft sm:text-[1.12rem]"
-        >
+        <p data-rise className="measure t-body text-ink-soft">
           E não para no primeiro contato. Você lança uma campanha, o WhatsApp
           lota de gente perguntando a mesma coisa, e lá vai seu dia inteiro
           respondendo manualmente o que um site bem feito qualificaria sozinho.
