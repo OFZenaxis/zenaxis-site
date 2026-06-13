@@ -42,11 +42,10 @@ export function Differential() {
         </p>
         <h2
           data-rise
-          className="relative mt-4 max-w-[20ch] font-display text-[clamp(1.8rem,4vw,2.8rem)] font-[340] leading-[1.1] tracking-tight"
+          className="relative mt-4 max-w-[26ch] text-balance font-display text-[clamp(1.8rem,4vw,2.8rem)] font-[340] leading-[1.1] tracking-tight"
         >
-          A maioria entrega um site e some.
-          <br />
-          Eu entrego o <em className="text-accent">sistema inteiro</em> e fico.
+          A maioria entrega um site e some. Eu entrego o{" "}
+          <em className="text-accent">sistema inteiro</em> e fico.
         </h2>
         <p data-rise className="relative mt-5 max-w-[58ch] text-[#cdc6b6]">
           Qualquer um hoje faz alguma coisa com Wix ou IA. O que ninguém faz

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { buildMessage, calc, fmt } from "@/lib/pricing";
+import { Configurator } from "@/components/cotacao/Configurator";
 
 export const metadata: Metadata = {
   title: "Monte sua cotação",
@@ -8,29 +8,22 @@ export const metadata: Metadata = {
   alternates: { canonical: "/cotacao" },
 };
 
-/* Placeholder da Fase A: o motor já roda no servidor e o CTA leva a
-   estimativa real pro WhatsApp. A interface interativa chega na Fase B. */
+/* O Configurator (client) já renderiza o estado default no servidor, com os
+   chips marcados e um href wa.me válido — funciona sem JS. O JS pré-preenche
+   pela URL, anima e atualiza o href a cada mudança. */
 export default function CotacaoPage() {
-  const base = calc({});
-  const waHref = buildMessage({}, base.total, base.days);
-
   return (
-    <section className="mx-auto max-w-[1180px] px-7 py-20">
-      <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-soft">
-        Cotação viva
-      </p>
-      <h1 className="mt-6 max-w-[16ch] font-display text-[clamp(2.2rem,5.5vw,4rem)] font-[340] leading-[1.05] tracking-tight">
-        Monte sua cotação <em className="text-accent">em minutos.</em>
+    <section className="mx-auto max-w-[1180px] px-7 py-14 sm:py-16">
+      <h1 className="max-w-[16ch] text-balance font-display text-[clamp(2.2rem,5.5vw,4rem)] font-[340] leading-[1.05] tracking-tight">
+        Monte seu orçamento <em className="text-accent">em 1 minuto.</em>
       </h1>
-      <p className="mt-6 max-w-[52ch] text-ink-soft">
-        Em breve você ajusta tipo, porte, extras e prazo aqui mesmo e vê o
-        valor mudar na hora. Por enquanto, uma landing page parte de{" "}
-        <strong className="text-ink">{fmt(base.total)}</strong> com prazo
-        aproximado de <strong className="text-ink">{base.days} dias úteis</strong>.
+      <p className="mt-5 max-w-[56ch] text-ink-soft">
+        Clique no que faz sentido pro seu projeto e veja investimento e prazo se
+        atualizarem na hora. É uma estimativa pra você ter a faixa. O valor
+        final sai depois de uma conversa rápida, sem compromisso.
       </p>
-      <a href={waHref} className="btn btn-accent btn-lg mt-8">
-        <span>Receber proposta no WhatsApp</span>
-      </a>
+
+      <Configurator />
     </section>
   );
 }

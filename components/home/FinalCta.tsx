@@ -17,7 +17,7 @@ export function FinalCta() {
     >
       <h2
         data-rise
-        className="mx-auto max-w-[18ch] font-display text-[clamp(2rem,5.5vw,3.6rem)] font-[340] leading-[1.05] tracking-tight"
+        className="mx-auto max-w-[18ch] text-balance font-display text-[clamp(2rem,5.5vw,3.6rem)] font-[340] leading-[1.05] tracking-tight"
       >
         Seu concorrente já está online.
         <br />

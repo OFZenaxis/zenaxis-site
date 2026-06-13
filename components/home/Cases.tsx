@@ -124,37 +124,44 @@ export function Cases() {
       <SectionLabel number="02" title="Projetos" />
       <h2
         data-sec-title
-        className="mt-10 max-w-[18ch] font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.06] tracking-tight"
+        className="mt-10 max-w-[20ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.06] tracking-tight"
       >
-        Trabalho real.
-        <br />
-        <em className="text-accent">Não mockup de banco de imagem.</em>
+        Trabalho real, <em className="text-accent">não mockup de banco de imagem.</em>
       </h2>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
-        {/* FORJA primeiro: a única prova navegável, com link real. */}
+      <div className="mt-10 grid gap-6">
+        {/* FORJA flagship: card full width, vídeo grande, a única prova
+            navegável com link real. Media à esquerda, conteúdo à direita. */}
         <a
           data-case
           href={FORJA_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="paper-lift group block overflow-hidden rounded-[18px] border border-line bg-card"
+          className="paper-lift group grid overflow-hidden rounded-[18px] border border-line bg-card md:grid-cols-[1.1fr_0.9fr]"
         >
-          <BrowserChrome domain="treinolandpage.zenaxis.com.br" />
-          <div data-media className="relative aspect-video border-b border-line">
-            <video
-              ref={videoRef}
-              muted
-              loop
-              playsInline
-              preload="none"
-              poster="/video/forja-poster.webp"
-              className="absolute inset-0 h-full w-full object-cover"
+          <div className="border-line md:border-r">
+            <BrowserChrome domain="treinolandpage.zenaxis.com.br" />
+            <div
+              data-media
+              className="relative aspect-video border-b border-line md:border-b-0"
             >
-              <source src="/video/forja-wide.mp4" type="video/mp4" />
-            </video>
+              <video
+                ref={videoRef}
+                muted
+                loop
+                playsInline
+                preload="none"
+                poster="/video/forja-poster.webp"
+                className="absolute inset-0 h-full w-full object-cover"
+              >
+                <source src="/video/forja-wide.mp4" type="video/mp4" />
+              </video>
+            </div>
           </div>
-          <div data-case-body className="p-6 pb-7">
+          <div
+            data-case-body
+            className="flex flex-col justify-center p-7 sm:p-9"
+          >
             <div className="flex items-center justify-between gap-3">
               <span className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-accent-deep">
                 Landing · Demo interativa
@@ -167,80 +174,82 @@ export function Cases() {
                 No ar
               </span>
             </div>
-            <h3 className="mt-2 font-display text-[1.5rem] font-medium tracking-tight">
+            <h3 className="mt-3 font-display text-[clamp(1.6rem,2.6vw,2.1rem)] font-medium tracking-tight">
               Forja
             </h3>
-            <p className="mt-1.5 text-[0.96rem] text-ink-soft">
-              Landing de demonstração publicada pra você testar agora:
-              animação, copy e estrutura de conversão funcionando ao vivo.
+            <p className="mt-2.5 max-w-[42ch] text-[1rem] text-ink-soft">
+              Landing de demonstração publicada pra você testar agora: animação,
+              copy e estrutura de conversão funcionando ao vivo, no ar de
+              verdade. Passe o mouse pra ver, clique pra abrir e navegar.
             </p>
-            <span className="mt-4 inline-block text-[0.92rem] font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4 group-hover:text-accent-deep">
+            <span className="mt-5 inline-block self-start text-[0.95rem] font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4 group-hover:text-accent-deep">
               Abrir o projeto no ar
             </span>
           </div>
         </a>
 
-        {/* SaiuDelivery */}
-        <article
-          data-case
-          className="paper-lift overflow-hidden rounded-[18px] border border-line bg-card"
-        >
-          <BrowserChrome />
-          <div data-media className="relative aspect-video border-b border-line">
-            <Image
-              src="/cases/saiudelivery.webp"
-              alt="Telas da plataforma SaiuDelivery"
-              width={1280}
-              height={720}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
-          <div data-case-body className="p-6 pb-7">
-            <span className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-accent-deep">
-              SaaS · Delivery
-            </span>
-            <h3 className="mt-2 font-display text-[1.5rem] font-medium tracking-tight">
-              SaiuDelivery
-            </h3>
-            <p className="mt-1.5 text-[0.96rem] text-ink-soft">
-              Plataforma SaaS para restaurantes terem delivery próprio e fugir
-              da comissão dos apps. Cardápio digital, KDS de cozinha e painel
-              para várias lojas. Projeto autoral.
-            </p>
-          </div>
-        </article>
+        {/* SaiuDelivery e PrimeTur lado a lado abaixo do flagship. */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <article
+            data-case
+            className="paper-lift overflow-hidden rounded-[18px] border border-line bg-card"
+          >
+            <BrowserChrome />
+            <div data-media className="relative aspect-video border-b border-line">
+              <Image
+                src="/cases/saiudelivery.webp"
+                alt="Telas da plataforma SaiuDelivery"
+                width={1280}
+                height={720}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+            <div data-case-body className="p-6 pb-7">
+              <span className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-accent-deep">
+                SaaS · Delivery
+              </span>
+              <h3 className="mt-2 font-display text-[1.5rem] font-medium tracking-tight">
+                SaiuDelivery
+              </h3>
+              <p className="mt-1.5 text-[0.96rem] text-ink-soft">
+                Plataforma SaaS para restaurantes terem delivery próprio e fugir
+                da comissão dos apps. Cardápio digital, KDS de cozinha e painel
+                para várias lojas. Projeto autoral.
+              </p>
+            </div>
+          </article>
 
-        {/* PrimeTur */}
-        <article
-          data-case
-          className="paper-lift overflow-hidden rounded-[18px] border border-line bg-card"
-        >
-          <BrowserChrome />
-          <div data-media className="relative aspect-video border-b border-line">
-            <Image
-              src="/cases/primetur.webp"
-              alt="Painel do PrimeTur, CRM de turismo com IA"
-              width={1280}
-              height={720}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
-          <div data-case-body className="p-6 pb-7">
-            <span className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-accent-deep">
-              CRM · Turismo + IA
-            </span>
-            <h3 className="mt-2 font-display text-[1.5rem] font-medium tracking-tight">
-              PrimeTur
-            </h3>
-            <p className="mt-1.5 text-[0.96rem] text-ink-soft">
-              CRM de turismo com IA: dashboard de contratos, cotação por
-              linguagem natural, agente de atendimento autônomo e busca
-              semântica. Produto autoral em evolução.
-            </p>
-          </div>
-        </article>
+          <article
+            data-case
+            className="paper-lift overflow-hidden rounded-[18px] border border-line bg-card"
+          >
+            <BrowserChrome />
+            <div data-media className="relative aspect-video border-b border-line">
+              <Image
+                src="/cases/primetur.webp"
+                alt="Painel do PrimeTur, CRM de turismo com IA"
+                width={1280}
+                height={720}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+            <div data-case-body className="p-6 pb-7">
+              <span className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-accent-deep">
+                CRM · Turismo + IA
+              </span>
+              <h3 className="mt-2 font-display text-[1.5rem] font-medium tracking-tight">
+                PrimeTur
+              </h3>
+              <p className="mt-1.5 text-[0.96rem] text-ink-soft">
+                CRM de turismo com IA: dashboard de contratos, cotação por
+                linguagem natural, agente de atendimento autônomo e busca
+                semântica. Produto autoral em evolução.
+              </p>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
   );

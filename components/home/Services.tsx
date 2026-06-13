@@ -97,7 +97,7 @@ export function Services() {
       <SectionLabel number="01" title="Serviços" />
       <h2
         data-sec-title
-        className="mt-10 max-w-[18ch] font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.06] tracking-tight"
+        className="mt-10 max-w-[20ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.06] tracking-tight"
       >
         Você não compra páginas.
         <br />

@@ -151,14 +151,124 @@ body {
   opacity: 0;
 }
 
-/* Foco visível por teclado em qualquer interativo. */
-a:focus-visible,
-button:focus-visible {
+/* ============================================================================
+   CHIPS DA COTAÇÃO (motion.md, microinterações).
+   - O input radio/checkbox real fica sr-only (acessível, foca de verdade).
+   - O chip ativo recebe a cor por WIPE de tinta (::before scaleX 0 -> 1).
+   - O press de carimbo (scale 0.96) é via gsap no clique, desligado em
+     capture/reduced-motion. Aqui só a parte de estado/cor.
+============================================================================ */
+.chip {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  user-select: none;
+  border: 1.5px solid var(--color-line);
+  background: var(--color-paper);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  transition: border-color 0.2s var(--ease-settle), color 0.2s var(--ease-settle);
+}
+/* Tinta aplicada por wipe da esquerda. Fica atrás do rótulo (z-index -1
+   dentro do stacking context isolado do próprio chip). */
+.chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* 8% mantém o texto accent-deep em 4.62:1 sobre o papel tingido (AA);
+     14% reprovava (4.28:1). */
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--ease-settle);
+}
+.chip:hover { border-color: var(--color-ink-soft); }
+.chip[data-active="true"] {
+  border-color: var(--color-accent);
+  color: var(--color-accent-deep);
+}
+.chip[data-active="true"]::before { transform: scaleX(1); }
+.chip-hint { font-weight: 400; font-size: 0.74rem; color: var(--color-ink-soft); }
+.chip[data-active="true"] .chip-hint { color: var(--color-accent-deep); }
+/* Foco de teclado: o input sr-only foca e o anel aparece no chip. */
+.chip:has(:focus-visible) {
   outline: 2.5px solid var(--color-accent-deep);
   outline-offset: 2px;
 }
 
+/* ============================================================================
+   ODÔMETRO MECÂNICO (motion.md): rolagem vertical de dígitos.
+   Cada dígito é uma coluna 0-9 que desloca por translateY. Separadores
+   (R$, ponto, espaço) ficam estáticos. SSR já posiciona o dígito certo
+   (transform inline) — legível sem JS. Em static (capture/reduced) a
+   transição é desligada: vai direto ao valor.
+============================================================================ */
+.odo {
+  display: inline-flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+.odo-col {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: baseline;
+}
+.odo-strip {
+  display: flex;
+  flex-direction: column;
+}
+.odo-strip[data-animate="true"] {
+  transition: transform 0.55s var(--ease-out);
+}
+.odo-digit {
+  height: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Barra de progresso da cotação: a régua avança com transição curta. */
+.prog-fill { transition: width 0.5s var(--ease-settle); }
+
+/* Reserva espaço no fim do documento pra barra fixa mobile não cobrir o
+   rodapé. CSS puro via :has() — funciona sem JS (a barra é SSR). */
+@media (max-width: 767px) {
+  body:has(.mobile-quote-bar) { padding-bottom: 88px; }
+}
+
+/* Foco visível por teclado em qualquer interativo. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2.5px solid var(--color-accent-deep);
+  outline-offset: 2px;
+}
+
+/* Modo estático (capture/reduced-motion): mata TODAS as transições da
+   linguagem, inclusive as microinterações de CSS puro. Espelha o bloco
+   reduced-motion abaixo, mas ligado pela classe .motion-static (que o
+   MotionProvider põe no <html> quando o modo é static). */
+.motion-static .btn,
+.motion-static .btn::before,
+.motion-static .link-ink::after,
+.motion-static .paper-lift,
+.motion-static .chip,
+.motion-static .chip::before,
+.motion-static .odo-strip,
+.motion-static .prog-fill { transition: none; }
+
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto; }
-  .btn, .btn::before, .link-ink::after, .paper-lift { transition: none; }
+  .btn, .btn::before, .link-ink::after, .paper-lift,
+  .chip, .chip::before, .odo-strip, .prog-fill { transition: none; }
 }

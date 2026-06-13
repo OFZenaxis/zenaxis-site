@@ -1,5 +1,6 @@
 export { MotionProvider, useMotion, type MotionMode } from "./MotionProvider";
 export { useReveal, type RevealOptions } from "./useReveal";
+export { stampPress } from "./stamp";
 export {
   EASE,
   DUR,

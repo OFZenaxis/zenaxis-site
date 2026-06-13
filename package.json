@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "qc": "node scripts/qc.mjs"
+    "qc": "node scripts/qc.mjs",
+    "qc:flow": "node scripts/flow-cotacao.mjs",
+    "qc:motion": "node scripts/probe-motion.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",

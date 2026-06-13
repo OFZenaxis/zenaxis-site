@@ -13,7 +13,9 @@ import { SectionLabel } from "./SectionLabel";
 
 export function QuoteTeaser() {
   const root = useReveal<HTMLDivElement>({ selector: "[data-rise]" });
-  const base = calc({});
+  /* porte: "medio" explícito pra o rótulo do item bater com o default do
+     configurador ("Landing page · porte médio"); total/prazo inalterados. */
+  const base = calc({ porte: "medio" });
 
   return (
     <section id="cotacao" className="mx-auto max-w-[1180px] px-7 py-16">
@@ -22,7 +24,7 @@ export function QuoteTeaser() {
         <div>
           <h2
             data-rise
-            className="max-w-[20ch] font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.06] tracking-tight"
+            className="max-w-[22ch] text-balance font-display text-[clamp(1.9rem,4.4vw,3.1rem)] font-[360] leading-[1.06] tracking-tight"
           >
             Não vou te dizer que faço cotação bonita.
             <br />
@@ -63,7 +65,7 @@ export function QuoteTeaser() {
             ))}
           </ul>
           <Link
-            href="/cotacao"
+            href="/cotacao?tipo=landing"
             className="btn btn-accent mt-6 w-full justify-center"
           >
             <span>Montar cotação completa</span>

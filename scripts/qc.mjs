@@ -115,8 +115,29 @@ try {
   const cotacaoHtml = await cotacao.text();
   check("/cotacao responde 200", cotacao.status === 200);
   check(
-    "/cotacao tem CTA wa.me com estimativa do motor",
+    "/cotacao tem CTA wa.me válido no HTML servido (sem JS)",
     /href="https:\/\/wa\.me\/5561995783461\?text=/.test(cotacaoHtml),
+  );
+  check(
+    "/cotacao usa radiogroup no HTML servido (semântica da auditoria)",
+    /role="radiogroup"/.test(cotacaoHtml),
+  );
+  check(
+    "/cotacao tem chip default marcado no HTML servido (estado SSR)",
+    /data-active="true"/.test(cotacaoHtml),
+  );
+  const waMatch = cotacaoHtml.match(
+    /href="https:\/\/wa\.me\/5561995783461\?text=([^"]+)"/,
+  );
+  let waMsg = "";
+  try {
+    waMsg = waMatch ? decodeURIComponent(waMatch[1]) : "";
+  } catch {
+    waMsg = "";
+  }
+  check(
+    "/cotacao: mensagem do CTA já traz a estimativa default (R$ 1.500)",
+    waMsg.includes("Investimento estimado: R$ 1.500"),
   );
 
   const robots = await fetch(ORIGIN + "/robots.txt");
